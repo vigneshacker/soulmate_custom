@@ -17,6 +17,7 @@ An item is a simple JSON object that looks like:
       "score": 81,
       "data": {
         "url": "/citi-field-tickets/",
+        "city_id": 2,
         "subtitle": "Flushing, NY"
       }
     }
@@ -38,11 +39,11 @@ You can load data into Soulmate by piping items in the JSON lines format into `s
 
 Here's a sample `venues.json` (one JSON item per line):
 
-    {"id":1,"term":"Dodger Stadium","score":85,"data":{"url":"\/dodger-stadium-tickets\/","subtitle":"Los Angeles, CA"}}
-    {"id":28,"term":"Angel Stadium","score":85,"data":{"url":"\/angel-stadium-tickets\/","subtitle":"Anaheim, CA"}}
-    {"id":30,"term":"Chase Field ","score":85,"data":{"url":"\/chase-field-tickets\/","subtitle":"Phoenix, AZ"}}
-    {"id":29,"term":"Sun Life Stadium","score":84,"data":{"url":"\/sun-life-stadium-tickets\/","subtitle":"Miami, FL"}}
-    {"id":2,"term":"Turner Field","score":83,"data":{"url":"\/turner-field-tickets\/","subtitle":"Atlanta, GA"}}
+    {"id":1,"term":"Dodger Stadium","score":85,"data":{"url":"\/dodger-stadium-tickets\/", "city_id": 2, "subtitle":"Los Angeles, CA"}}
+    {"id":28,"term":"Angel Stadium","score":85,"data":{"url":"\/angel-stadium-tickets\/", "city_id": 2, "subtitle":"Anaheim, CA"}}
+    {"id":30,"term":"Chase Field ","score":85,"data":{"url":"\/chase-field-tickets\/", "city_id": 1, "subtitle":"Phoenix, AZ"}}
+    {"id":29,"term":"Sun Life Stadium","score":84,"data":{"url":"\/sun-life-stadium-tickets\/"," "city_id": 2, subtitle":"Miami, FL"}}
+    {"id":2,"term":"Turner Field","score":83,"data":{"url":"\/turner-field-tickets\/", "city_id": 1, "subtitle":"Atlanta, GA"}}
 
 And here's the load command (Soulmate assumes redis is running locally on the default port, or you can specify a redis connection string with the `--redis` argument):
 
@@ -68,6 +69,7 @@ And viewing the service in your browser: http://localhost:5678/search?types[]=ve
             "score": 85,
             "data": {
               "url": "/angel-stadium-tickets/",
+              "city_id": 2,
               "subtitle": "Anaheim, CA"
             }
           },
@@ -77,6 +79,7 @@ And viewing the service in your browser: http://localhost:5678/search?types[]=ve
             "score": 85,
             "data": {
               "url": "/dodger-stadium-tickets/",
+              "city_id": 1,
               "subtitle": "Los Angeles, CA"
             }
           },
@@ -86,6 +89,7 @@ And viewing the service in your browser: http://localhost:5678/search?types[]=ve
             "score": 84,
             "data": {
               "url": "/sun-life-stadium-tickets/",
+              "city_id": 2,
               "subtitle": "Miami, FL"
             }
           }
@@ -93,7 +97,7 @@ And viewing the service in your browser: http://localhost:5678/search?types[]=ve
       }
     }
 
-The `/search` method supports multiple `types` as well as an optional `limit`. For example: `http://localhost:5678/search?types[]=event&types[]=venue&types[]=performer&limit=3&term=yank`. You can also add the `callback` parameter to enable JSONP output.
+The `/search` method supports multiple `types` as well as an optional `limit`. For example: `http://localhost:5678/search?types[]=event&types[]=venue&types[]=performer&limit=3&term=yank&city=2`. You can also add the `callback` parameter to enable JSONP output.
 
 ### Mounting soulmate into a rails app
 
