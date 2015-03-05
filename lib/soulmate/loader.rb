@@ -36,6 +36,9 @@ module Soulmate
       Soulmate.redis.pipelined do
         # store the raw data in a separate key to reduce memory usage
         Soulmate.redis.hset(database, item["id"], MultiJson.encode(item))
+
+        Soulmate.redis.zadd "city_id:#{item['data']['city_id']}", item["score"], item["id"]
+
         phrase = ([item["term"]] + (item["aliases"] || [])).join(' ')
         prefixes_for_phrase(phrase).each do |p|
           Soulmate.redis.sadd(base, p) # remember this prefix in a master set
@@ -52,6 +55,7 @@ module Soulmate
         # undo the operations done in add
         Soulmate.redis.pipelined do
           Soulmate.redis.hdel(database, prev_item["id"])
+          Soulmate.redis.zrem("city_id:prev_item['data']['city_id']", prev_item["id"])
           phrase = ([prev_item["term"]] + (prev_item["aliases"] || [])).join(' ')
           prefixes_for_phrase(phrase).each do |p|
             Soulmate.redis.srem(base, p)

@@ -21,13 +21,14 @@ module Soulmate
       raise Sinatra::NotFound unless (params[:term] and params[:types] and params[:types].is_a?(Array))
       
       limit = (params[:limit] || 5).to_i
+      city = (params[:city] || nil)
       types = params[:types].map { |t| normalize(t) }
       term  = params[:term]
       
       results = {}
       types.each do |type|
         matcher = Matcher.new(type)
-        results[type] = matcher.matches_for_term(term, :limit => limit)
+        results[type] = matcher.matches_for_term(term, :limit => limit, :city => city)
       end
       
       MultiJson.encode({
